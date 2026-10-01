@@ -1,0 +1,124 @@
+erDiagram
+    USERS {
+        int user_id PK
+        string name
+        string email
+        string password
+        string phone
+        string role
+        timestamp created_at
+    }
+
+    CUSTOMERS {
+        int customer_id PK
+        int user_id FK
+        string name
+        string email
+        string phone
+        string address
+        int loyalty_points
+        timestamp created_at
+    }
+
+    ADMIN {
+        int admin_id PK
+        int user_id FK
+        string name
+        string email
+        string role
+        timestamp created_at
+    }
+
+    ORDERS {
+        int order_id PK
+        int customer_id FK
+        datetime order_date
+        decimal total_amount
+        string status
+        int payment_id FK
+        string shipping_address
+        timestamp created_at
+    }
+
+    ORDER_ITEMS {
+        int order_item_id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        decimal price
+        decimal subtotal
+    }
+
+    PRODUCTS {
+        int product_id PK
+        string name
+        text description
+        decimal price
+        int category_id FK
+        int stock_quantity
+        string status
+        timestamp created_at
+    }
+
+    CATEGORIES {
+        int category_id PK
+        string name
+        text description
+    }
+
+    INVENTORY {
+        int inventory_id PK
+        int product_id FK
+        int stock_quantity
+        boolean low_stock_alert
+        timestamp updated_at
+    }
+
+    PAYMENTS {
+        int payment_id PK
+        int order_id FK
+        string payment_method
+        string payment_status
+        datetime payment_date
+        decimal amount
+    }
+
+    RETURNS {
+        int return_id PK
+        int order_id FK
+        int product_id FK
+        text reason
+        string status
+        datetime return_date
+        decimal refund_amount
+    }
+
+    REWARDS {
+        int reward_id PK
+        int customer_id FK
+        int points
+        string description
+        timestamp created_at
+    }
+
+    ANALYTICS {
+        int analytics_id PK
+        string type
+        string date_range
+        decimal total_sales
+        int total_orders
+        text top_products
+        timestamp generated_at
+    }
+
+    USERS ||--|| CUSTOMERS : "has"
+    USERS ||--o{ ADMIN : "manages"
+    CUSTOMERS ||--o{ ORDERS : "places"
+    CUSTOMERS ||--o{ REWARDS : "earns"
+    ORDERS ||--|{ ORDER_ITEMS : "contains"
+    ORDERS ||--|| PAYMENTS : "has"
+    ORDERS ||--o{ RETURNS : "includes"
+    ORDER_ITEMS }|--|| PRODUCTS : "references"
+    PRODUCTS ||--|| CATEGORIES : "belongs to"
+    PRODUCTS ||--|| INVENTORY : ""
+    PAYMENTS ||--o{ ANALYTICS : "supports"
